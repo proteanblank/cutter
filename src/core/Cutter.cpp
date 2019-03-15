@@ -37,6 +37,7 @@ namespace RJsonKey {
     R_JSON_KEY(edges);
     R_JSON_KEY(enabled);
     R_JSON_KEY(entropy);
+    R_JSON_KEY(fail);
     R_JSON_KEY(fcn_addr);
     R_JSON_KEY(fcn_name);
     R_JSON_KEY(fields);
@@ -2568,6 +2569,8 @@ QList<DisassemblyLine> CutterCore::disassembleLines(RVA offset, int lines)
         DisassemblyLine line;
         line.offset = object[RJsonKey::offset].toVariant().toULongLong();
         line.text = ansiEscapeToHtml(object[RJsonKey::text].toString());
+        line.jump = object[RJsonKey::jump].toVariant().toULongLong();
+        line.fail = object[RJsonKey::fail].toVariant().toULongLong();
         r << line;
     }
 
