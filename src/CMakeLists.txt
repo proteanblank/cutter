@@ -141,6 +141,12 @@ set(SOURCES
     widgets/AddressableDockWidget.cpp
     dialogs/preferences/AnalOptionsWidget.cpp
     common/DecompilerHighlighter.cpp
+    dialogs/GlibcHeapInfoDialog.cpp
+    widgets/HeapDockWidget.cpp
+    widgets/GlibcHeapWidget.cpp
+    dialogs/GlibcHeapBinsDialog.cpp
+    widgets/HeapBinsGraphView.cpp
+    dialogs/ArenaInfoDialog.cpp
 )
 set(HEADER_FILES
     core/Cutter.h
@@ -294,6 +300,12 @@ set(HEADER_FILES
     widgets/AddressableDockWidget.h
     dialogs/preferences/AnalOptionsWidget.h
     common/DecompilerHighlighter.h
+    dialogs/GlibcHeapInfoDialog.h
+    widgets/HeapDockWidget.h
+    widgets/GlibcHeapWidget.h
+    dialogs/GlibcHeapBinsDialog.h
+    widgets/HeapBinsGraphView.h
+    dialogs/ArenaInfoDialog.h
 )
 set(UI_FILES
     dialogs/AboutDialog.ui
@@ -360,6 +372,11 @@ set(UI_FILES
     dialogs/LayoutManager.ui
     widgets/RizinGraphWidget.ui
     dialogs/preferences/AnalOptionsWidget.ui
+    dialogs/GlibcHeapInfoDialog.ui
+    widgets/HeapDockWidget.ui
+    widgets/GlibcHeapWidget.ui
+    dialogs/GlibcHeapBinsDialog.ui
+    dialogs/ArenaInfoDialog.ui
 )
 set(QRC_FILES
     resources.qrc
@@ -412,6 +429,7 @@ endif()
 
 if (WIN32)
     set(PLATFORM_RESOURCES "img/cutter.rc")
+    set(OPTIONS WIN32)
 else()
     set(PLATFORM_RESOURCES "")
 endif()
@@ -423,7 +441,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
 endif()
 
 
-add_executable(Cutter ${UI_FILES} ${QRC_FILES} ${PLATFORM_RESOURCES} ${SOURCES} ${HEADER_FILES} ${BINDINGS_SOURCE})
+add_executable(Cutter ${OPTIONS} ${UI_FILES} ${QRC_FILES} ${PLATFORM_RESOURCES} ${SOURCES} ${HEADER_FILES} ${BINDINGS_SOURCE})
 set_target_properties(Cutter PROPERTIES
         OUTPUT_NAME cutter
         RUNTIME_OUTPUT_DIRECTORY ..
