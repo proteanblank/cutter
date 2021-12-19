@@ -21,10 +21,17 @@
  * and for light - only light ones.
  */
 const QHash<QString, ColorFlags> Configuration::relevantThemes = {
-    { "ayu", DarkFlag },     { "consonance", DarkFlag }, { "darkda", DarkFlag },
-    { "onedark", DarkFlag }, { "solarized", DarkFlag },  { "zenburn", DarkFlag },
-    { "cutter", LightFlag }, { "dark", LightFlag },      { "matrix", LightFlag },
-    { "tango", LightFlag },  { "white", LightFlag }
+    { "ayu", DarkFlag },    { "basic", DarkFlag },  { "behelit", DarkFlag },
+    { "bold", DarkFlag },   { "bright", DarkFlag }, { "consonance", DarkFlag },
+    { "darkda", DarkFlag }, { "defragger", DarkFlag },  { "focus", DarkFlag },
+    { "gentoo", DarkFlag }, { "lima", DarkFlag },   { "monokai", DarkFlag },
+    { "ogray", DarkFlag },  { "onedark", DarkFlag },    { "pink", DarkFlag },
+    { "rasta", DarkFlag },  { "sepia", DarkFlag },  { "smyck", DarkFlag },
+    { "solarized", DarkFlag },  { "twilight", DarkFlag },   { "white2", DarkFlag },
+    { "xvilka", DarkFlag }, { "zenburn", DarkFlag },
+    { "cga", LightFlag },   { "cutter", LightFlag },    { "dark", LightFlag },
+    { "gb", LightFlag },    { "matrix", LightFlag },    { "tango", LightFlag },
+    { "white", LightFlag }
 };
 static const QString DEFAULT_LIGHT_COLOR_THEME = "cutter";
 static const QString DEFAULT_DARK_COLOR_THEME = "ayu";
@@ -39,7 +46,7 @@ const QHash<QString, QHash<ColorFlags, QColor>> Configuration::cutterOptionColor
     { "gui.item_invalid",
       { { DarkFlag, QColor(0x9b, 0x9b, 0x9b) }, { LightFlag, QColor(0x9b, 0x9b, 0x9b) } } },
     { "gui.main",
-      { { DarkFlag, QColor(0x00, 0x80, 0x00) }, { LightFlag, QColor(0x00, 0x80, 0x00) } } },
+      { { DarkFlag, QColor(0x21, 0xd8, 0x93) }, { LightFlag, QColor(0x00, 0x80, 0x00) } } },
     { "gui.item_unsafe",
       { { DarkFlag, QColor(0xff, 0x81, 0x7b) }, { LightFlag, QColor(0xff, 0x81, 0x7b) } } },
     { "gui.navbar.seek",
@@ -281,6 +288,14 @@ void Configuration::loadNativeStylesheet()
         f.open(QFile::ReadOnly | QFile::Text);
         QTextStream ts(&f);
         QString stylesheet = ts.readAll();
+#ifdef Q_OS_MACOS
+        QFile mf(nativeWindowIsDark() ? ":native/native-macos-dark.qss" : ":native/native-macos-light.qss");
+        if (mf.exists()) {
+            mf.open(QFile::ReadOnly | QFile::Text);
+            QTextStream mts(&mf);
+            stylesheet += "\n" + mts.readAll();
+        }
+#endif
         qApp->setStyleSheet(stylesheet);
     }
 
@@ -515,7 +530,7 @@ void Configuration::setColorTheme(const QString &theme)
         Core()->cmdRaw("ecd");
         s.setValue("theme", "default");
     } else {
-        Core()->cmdRaw(QStringLiteral("eco %1").arg(theme));
+        rz_core_load_theme(Core()->core(), theme.toUtf8().constData());
         s.setValue("theme", theme);
     }
 
@@ -757,6 +772,16 @@ void Configuration::setOutputRedirectionEnabled(bool enabled)
 bool Configuration::getOutputRedirectionEnabled() const
 {
     return outputRedirectEnabled;
+}
+
+void Configuration::setPreviewValue( bool checked )
+{
+    s.setValue("asm.preview", checked);
+}
+
+bool Configuration::getPreviewValue() const
+{
+    return s.value("asm.preview").toBool();
 }
 
 bool Configuration::getGraphBlockEntryOffset()
